@@ -393,17 +393,12 @@ document.getElementById('btn-generate').addEventListener('click', async () => {
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || 'Sunucu hatası');
-const link = document.getElementById('download-link');
-
-const fallbackTitle = eserAdi.trim().split(/\s+/).slice(0, 5).join('_').replace(/[\\/:*?"<>|;,]/g, '');
-const fallbackIndeks = (atiflar[0]?.indeks || '').trim().split(/\s+/)[0].replace(/[\\/:*?"<>|;,()]/g, '');
-const fallbackName = (fallbackTitle + (fallbackIndeks ? '_' + fallbackIndeks : '')) + '.pdf';
-
-const finalName = data.download_name || fallbackName;
-
-link.href = `/api/download/${data.file_id}?name=${encodeURIComponent(finalName)}`;
-link.download = finalName;
-dl.classList.remove('hidden');
+    const link = document.getElementById('download-link');
+    link.href = `/api/download/${data.file_id}`;
+    const titlePart = eserAdi.trim().split(/\s+/).slice(0, 5).join('_').replace(/[\\/:*?"<>|;,]/g, '');
+    const indeksFirst = (atiflar[0]?.indeks || '').trim().split(/\s+/)[0].replace(/[\\/:*?"<>|;,()]/g, '');
+    link.download = (titlePart + (indeksFirst ? '_' + indeksFirst : '')) + '.pdf';
+    dl.classList.remove('hidden');
     document.getElementById('generate-info').textContent = 'PDF hazır!';
     showToast('PDF oluşturuldu', 'success');
   } catch (e) {
