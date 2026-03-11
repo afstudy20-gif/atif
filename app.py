@@ -212,4 +212,5 @@ def download(file_id):
 
 if __name__ == '__main__':
     debug = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
-    app.run(debug=debug, port=5050)
+    port = int(os.getenv('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=debug)
