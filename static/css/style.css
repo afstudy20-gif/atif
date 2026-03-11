@@ -1,0 +1,277 @@
+/* ── Reset & Base ──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f4f9;
+  color: #222;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+/* ── Header ────────────────────────────────────── */
+.site-header {
+  background: #2E5395;
+  color: #fff;
+  padding: 18px 0;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.site-header h1 { font-size: 20px; font-weight: 700; }
+.site-header .subtitle { font-size: 12px; opacity: .75; margin-top: 2px; }
+
+/* ── Cards ─────────────────────────────────────── */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.card h2 {
+  font-size: 14px; font-weight: 700; color: #2E5395;
+  padding-bottom: 8px; border-bottom: 2px solid #e8eef7;
+}
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-header h2 { border: none; padding: 0; margin: 0; }
+
+.badge {
+  display: inline-block;
+  background: #4471C4; color: #fff;
+  font-size: 11px; font-weight: 700;
+  border-radius: 10px; padding: 1px 7px;
+  margin-left: 6px; vertical-align: middle;
+}
+
+/* ── Forms ─────────────────────────────────────── */
+.form-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.flex1 { flex: 1; min-width: 160px; }
+.flex2 { flex: 2; min-width: 260px; }
+
+.form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.form-group label { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .4px; }
+.form-group .optional { font-weight: 400; text-transform: none; color: #999; }
+
+/* İndeks radio options */
+.indeks-options { display: flex; flex-direction: column; gap: 4px; }
+.indeks-option {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 400;
+  text-transform: none; letter-spacing: 0;
+  color: #333; cursor: pointer;
+  padding: 5px 8px; border-radius: 5px;
+  transition: background .15s;
+}
+.indeks-option:hover { background: #f0f4f9; }
+.indeks-option input[type="radio"] { accent-color: #2E5395; width: 15px; height: 15px; flex-shrink: 0; }
+.indeks-option:has(input:checked) { background: #e8eef8; color: #2E5395; font-weight: 600; }
+
+input[type="text"], textarea {
+  border: 1px solid #d0d8e8; border-radius: 6px;
+  padding: 7px 10px; font-size: 13px;
+  transition: border-color .15s; font-family: inherit; width: 100%;
+}
+input[type="text"]:focus, textarea:focus {
+  outline: none; border-color: #4471C4;
+  box-shadow: 0 0 0 3px rgba(68,113,196,.1);
+}
+textarea { resize: vertical; min-height: 52px; }
+
+.doi-row { display: flex; gap: 8px; margin-bottom: 5px; }
+.doi-row .doi-input { flex: 1; }
+
+/* ── Buttons ───────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 7px 14px; border: none; border-radius: 6px;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  transition: opacity .15s, transform .1s; white-space: nowrap;
+}
+.btn:hover { opacity: .88; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.btn-primary   { background: #2E5395; color: #fff; }
+.btn-secondary { background: #e8eef7; color: #2E5395; }
+.btn-success   { background: #1e7e34; color: #fff; }
+.btn-danger    { background: #dc3545; color: #fff; }
+.btn-sm   { padding: 5px 11px; font-size: 12px; }
+.btn-icon { padding: 3px 7px; font-size: 14px; background: transparent; color: inherit; }
+
+/* ── Atıf Card ─────────────────────────────────── */
+.atif-card {
+  border: 1px solid #d0d8e8; border-radius: 8px;
+  margin-bottom: 12px; overflow: hidden;
+  background: #fafcff;
+}
+
+.atif-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: #eef2fa; border-bottom: 1px solid #d0d8e8;
+  cursor: pointer; user-select: none;
+}
+.atif-num { font-weight: 700; font-size: 13px; color: #2E5395; }
+.atif-header-actions { display: flex; gap: 4px; }
+.collapse-btn { font-size: 12px; color: #888; }
+
+.atif-body { padding: 14px; }
+.atif-card.collapsed .atif-body { display: none; }
+.atif-card.collapsed .collapse-btn { transform: rotate(180deg); }
+
+/* PDF Upload Row */
+.pdf-uploads-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+@media (max-width: 600px) { .pdf-uploads-row { grid-template-columns: 1fr; } }
+
+/* PDF Upload Area */
+.pdf-upload-area {
+  border: 1px dashed #bbc9e0; border-radius: 8px;
+  padding: 12px; background: #fff;
+}
+.pdf-upload-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.pdf-upload-label { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .4px; }
+
+.pdf-status {
+  display: flex; align-items: center; gap: 10px;
+  color: #aaa; font-size: 12px; padding: 6px 0;
+}
+.pdf-icon { font-size: 22px; }
+.pdf-status-text { line-height: 1.4; }
+
+.pdf-loaded {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; padding: 4px 0;
+}
+.pdf-name-text { font-weight: 600; color: #2E5395; }
+.pdf-pages-text { color: #888; }
+
+.pdf-upload-area.has-pdf { border-color: #4471C4; border-style: solid; }
+.pdf-upload-area.has-pdf .pdf-status-empty { display: none; }
+.pdf-upload-area.has-pdf .pdf-loaded { display: flex !important; }
+
+/* ── Slots Grid ────────────────────────────────── */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 700px) { .slots-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.slot {
+  border: 1px dashed #bbc9e0; border-radius: 8px;
+  padding: 10px; background: #fff;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: border-color .2s;
+}
+.slot.has-page { border-color: #4471C4; border-style: solid; }
+
+.slot-label { font-size: 11px; font-weight: 700; color: #2E5395; line-height: 1.3; }
+.slot-sub   { font-size: 10px; color: #888; line-height: 1.3; }
+
+.slot-thumb-wrap {
+  flex: 1; min-height: 80px; max-height: 130px;
+  display: flex; align-items: center; justify-content: center;
+  background: #f5f7fb; border-radius: 4px; overflow: hidden;
+}
+.slot-empty-thumb { font-size: 28px; color: #ccc; }
+.slot-thumb { display: none; width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
+.slot.has-page .slot-empty-thumb { display: none; }
+.slot.has-page .slot-thumb { display: block; }
+
+.slot-pick-btn { width: 100%; }
+
+/* atif_sayfasi zorunlu seçim vurgusu */
+.slot[data-slot="atif_sayfasi"]:not(.has-page) .slot-pick-btn {
+  background: #2E5395; color: #fff;
+}
+.slot[data-slot="atif_sayfasi"]:not(.has-page) .slot-label::after {
+  content: ' *';
+  color: #dc3545;
+}
+
+/* ── Modal ─────────────────────────────────────── */
+.modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal.hidden { display: none; }
+
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(2px);
+}
+.modal-box {
+  position: relative; z-index: 1;
+  background: #fff; border-radius: 12px;
+  width: min(600px, 95vw);
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid #e8eef7;
+  font-weight: 700; font-size: 14px; color: #2E5395;
+}
+.modal-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; padding: 10px 18px; border-bottom: 1px solid #f0f4f9;
+  font-size: 13px; color: #555;
+}
+.modal-nav .btn-icon { font-size: 22px; color: #2E5395; }
+.modal-preview-wrap {
+  flex: 1; overflow-y: auto; padding: 12px 18px;
+  display: flex; align-items: flex-start; justify-content: center;
+  background: #f5f7fb;
+}
+#modal-preview-img {
+  max-width: 100%; border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}
+.modal-footer {
+  padding: 12px 18px; border-top: 1px solid #e8eef7; text-align: center;
+}
+#modal-select { min-width: 160px; padding: 10px 24px; font-size: 14px; }
+
+/* ── Actions Card ──────────────────────────────── */
+.actions-card { display: flex; flex-direction: column; gap: 10px; }
+.actions-row  { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.info-text    { font-size: 13px; color: #666; }
+
+.progress-bar { height: 5px; background: #e0e8f4; border-radius: 4px; overflow: hidden; }
+.progress-fill {
+  height: 100%; background: #4471C4; width: 0%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+@keyframes loading { 0%,100% { width: 15%; } 50% { width: 80%; } }
+
+#download-area { text-align: center; padding: 6px 0; }
+#download-link { font-size: 14px; padding: 11px 28px; }
+
+/* ── Toast ─────────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #333; color: #fff;
+  padding: 9px 18px; border-radius: 6px; font-size: 13px;
+  transition: transform .25s; z-index: 999; pointer-events: none;
+}
+#toast.show               { transform: translateX(-50%) translateY(0); }
+#toast.error              { background: #dc3545; }
+#toast.success            { background: #1e7e34; }
+
+.hidden { display: none !important; }

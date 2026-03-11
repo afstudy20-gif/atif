@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yt-dlp --list-subs \"https://www.youtube.com/watch?v=scHFRk_moZs\")",
+      "Bash(yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang tr --sub-format json3 -o \"transcript_%\\(id\\)s\" \"https://www.youtube.com/watch?v=scHFRk_moZs\")",
+      "Bash(yt-dlp --skip-download --write-auto-subs --sub-lang tr-orig --sub-format srv1 -o \"transcript_%\\(id\\)s\" \"https://www.youtube.com/watch?v=scHFRk_moZs\")",
+      "Bash(yt-dlp --version)",
+      "Bash(pip install -U yt-dlp)",
+      "Bash(yt-dlp --skip-download --write-auto-subs --sub-lang tr --sub-format vtt -o \"transcript_%\\(id\\)s\" \"https://www.youtube.com/watch?v=scHFRk_moZs\")",
+      "Bash(python3 scripts/office/unpack.py \"/Users/yh/Library/CloudStorage/OneDrive-Personal/yay/13-ATIFLAR/atıf şablonu.docx\" /tmp/atif_sablonu_unpacked/)",
+      "Bash(pandoc \"/Users/yh/Library/CloudStorage/OneDrive-Personal/yay/13-ATIFLAR/atıf şablonu.docx\" -t markdown)",
+      "Bash(pip3 install defusedxml -q)",
+      "Bash(python3 -c \":*)",
+      "Bash(pip3 install flask fpdf2 pymupdf requests)",
+      "Bash(python3 -c \"from app import app; print\\(''Flask imports OK''\\)\")",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}

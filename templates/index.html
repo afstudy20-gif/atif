@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doçentlik Atıf Sistemi</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <h1>Doçentlik Atıf Sistemi</h1>
+    <p class="subtitle">ÜAK Şablonuna Uygun PDF Hazırlama</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ── ESER BİLGİLERİ ─────────────────────────── -->
+  <section class="card" id="eser-section">
+    <h2>1. Eser Bilgileri</h2>
+    <div class="form-row">
+      <div class="form-group flex2">
+        <label>Eser Adı</label>
+        <input type="text" id="eser-adi" placeholder="Makalenizin tam başlığı">
+      </div>
+      <div class="form-group flex1">
+        <label>YÖK Yayın ID</label>
+        <input type="text" id="yok-id" placeholder="Örn: 3362125">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ATIFLAR ────────────────────────────────── -->
+  <section class="card" id="atiflar-section">
+    <div class="section-header">
+      <h2>2. Atıflar <span id="atif-count-badge" class="badge">0</span></h2>
+      <button class="btn btn-secondary" id="btn-add-atif">+ Atıf Ekle</button>
+    </div>
+    <div id="atiflar-list"></div>
+  </section>
+
+  <!-- ── PDF OLUŞTUR ────────────────────────────── -->
+  <section class="card actions-card">
+    <div class="actions-row">
+      <div id="generate-info" class="info-text">Atıfları ekleyip PDF oluşturabilirsiniz.</div>
+      <button class="btn btn-primary" id="btn-generate">PDF Oluştur</button>
+    </div>
+    <div id="progress-bar" class="progress-bar hidden">
+      <div class="progress-fill"></div>
+    </div>
+    <div id="download-area" class="hidden">
+      <a id="download-link" class="btn btn-success" href="#">⬇ PDF İndir</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── SAYFA SEÇİCİ MODAL ────────────────────────── -->
+<div id="page-modal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="modal-title">Sayfa Seç</span>
+      <button class="btn btn-icon modal-close">✕</button>
+    </div>
+    <div class="modal-nav">
+      <button class="btn btn-icon" id="modal-prev">‹</button>
+      <span id="modal-page-info">Sayfa 1 / 1</span>
+      <button class="btn btn-icon" id="modal-next">›</button>
+    </div>
+    <div class="modal-preview-wrap">
+      <img id="modal-preview-img" src="" alt="sayfa önizleme">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modal-select">Bu Sayfayı Seç</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ATIF KARTI TEMPLATE ──────────────────────── -->
+<template id="atif-template">
+  <div class="atif-card" data-index="">
+
+    <div class="atif-header">
+      <span class="atif-num">Atıf #<span class="num"></span></span>
+      <div class="atif-header-actions">
+        <button class="btn btn-icon collapse-btn" title="Daralt/Genişlet">▲</button>
+        <button class="btn btn-icon btn-danger remove-atif" title="Kaldır">✕</button>
+      </div>
+    </div>
+
+    <div class="atif-body">
+      <!-- PDF YÜKLEMELERİ: 2 ayrı kaynak -->
+      <div class="pdf-uploads-row">
+
+        <!-- JCR / Dergi ünvan PDF -->
+        <div class="pdf-upload-area" data-pdftype="jcr">
+          <div class="pdf-upload-header">
+            <span class="pdf-upload-label">JCR / Dergi PDF</span>
+            <label class="btn btn-sm btn-secondary">
+              PDF Seç <input type="file" class="jcr-file-input" accept=".pdf" hidden>
+            </label>
+          </div>
+          <div class="pdf-status pdf-status-empty">
+            <span class="pdf-icon">📰</span>
+            <span class="pdf-status-text">Derginin JCR/ünvan sayfasını içeren PDF.<br>İlk sayfa otomatik seçilir.</span>
+          </div>
+          <div class="pdf-loaded hidden">
+            <span class="pdf-name-text"></span>
+            <span class="pdf-pages-text"></span>
+          </div>
+        </div>
+
+        <!-- Makale PDF -->
+        <div class="pdf-upload-area" data-pdftype="makale">
+          <div class="pdf-upload-header">
+            <span class="pdf-upload-label">Makale PDF</span>
+            <label class="btn btn-sm btn-secondary">
+              PDF Seç <input type="file" class="pdf-file-input" accept=".pdf" hidden>
+            </label>
+          </div>
+          <div class="pdf-status pdf-status-empty">
+            <span class="pdf-icon">📂</span>
+            <span class="pdf-status-text">Atıf yapan makalenin PDF'i.<br>Başlık ve kaynakça otomatik, atıf sayfası manuel seçilir.</span>
+          </div>
+          <div class="pdf-loaded hidden">
+            <span class="pdf-name-text"></span>
+            <span class="pdf-pages-text"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- İndeks -->
+      <div class="form-group">
+        <label>İndeks / Kapsam</label>
+        <div class="indeks-options">
+          <label class="indeks-option">
+            <input type="radio" class="indeks-input" name="" value="a) SCIE, SSCI, AHCI, ESCI veya Scopus">
+            <span>a) SCIE, SSCI, AHCI, ESCI veya Scopus</span>
+          </label>
+          <label class="indeks-option">
+            <input type="radio" class="indeks-input" name="" value="b) BKCI kapsamındaki kitapta">
+            <span>b) BKCI kapsamındaki kitapta</span>
+          </label>
+          <label class="indeks-option">
+            <input type="radio" class="indeks-input" name="" value="c) TR Dizin kapsamındaki dergide">
+            <span>c) TR Dizin kapsamındaki dergide</span>
+          </label>
+          <label class="indeks-option">
+            <input type="radio" class="indeks-input" name="" value="d) Diğer uluslararası/ulusal kitap veya dergide">
+            <span>d) Diğer uluslararası/ulusal kitap veya dergide</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Künye -->
+      <div class="form-group">
+        <label>Künye / Referans</label>
+        <div class="doi-row">
+          <input type="text" class="doi-input" placeholder="DOI girin (örn: 10.1234/abc)">
+          <button class="btn btn-secondary btn-sm doi-fetch">DOI Sorgula</button>
+        </div>
+        <textarea class="kunye-input" rows="2" placeholder="Künye (yazar, başlık, dergi, yıl, sayfa vb.)"></textarea>
+      </div>
+
+      <!-- SLOT GRID: 4 sayfa seçimi -->
+      <div class="slots-grid">
+        <div class="slot" data-slot="unvan">
+          <div class="slot-label">Yayının Ünvan Sayfası</div>
+          <div class="slot-sub">JCR / dergi kimlik sayfası</div>
+          <div class="slot-thumb-wrap">
+            <div class="slot-empty-thumb">📄</div>
+            <img class="slot-thumb" src="" alt="">
+          </div>
+          <button class="btn btn-sm btn-secondary slot-pick-btn" data-source="jcr" disabled>Sayfa Seç</button>
+        </div>
+
+        <div class="slot" data-slot="baslik">
+          <div class="slot-label">Eserin Başlık Sayfası</div>
+          <div class="slot-sub">Atıf yapan makalenin kapağı</div>
+          <div class="slot-thumb-wrap">
+            <div class="slot-empty-thumb">📄</div>
+            <img class="slot-thumb" src="" alt="">
+          </div>
+          <button class="btn btn-sm btn-secondary slot-pick-btn" disabled>Sayfa Seç</button>
+        </div>
+
+        <div class="slot" data-slot="atif_sayfasi">
+          <div class="slot-label">İlk Atıf Yapılan Sayfa</div>
+          <div class="slot-sub">Eserinize atıf yapılan bölüm</div>
+          <div class="slot-thumb-wrap">
+            <div class="slot-empty-thumb">📄</div>
+            <img class="slot-thumb" src="" alt="">
+          </div>
+          <button class="btn btn-sm btn-secondary slot-pick-btn" disabled>Sayfa Seç</button>
+        </div>
+
+        <div class="slot" data-slot="kaynakca">
+          <div class="slot-label">Kaynakça Sayfası</div>
+          <div class="slot-sub">Eserinizin referanslarda göründüğü sayfa</div>
+          <div class="slot-thumb-wrap">
+            <div class="slot-empty-thumb">📄</div>
+            <img class="slot-thumb" src="" alt="">
+          </div>
+          <button class="btn btn-sm btn-secondary slot-pick-btn" disabled>Sayfa Seç</button>
+        </div>
+      </div>
+      <!-- /slots-grid -->
+
+    </div><!-- /atif-body -->
+  </div>
+</template>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
