@@ -13,7 +13,11 @@
       "Bash(python3 -c \":*)",
       "Bash(pip3 install flask fpdf2 pymupdf requests)",
       "Bash(python3 -c \"from app import app; print\\(''Flask imports OK''\\)\")",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(find /Users/yh/atif -type d -not -path */.*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)"
     ]
   }
 }

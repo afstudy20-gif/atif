@@ -219,7 +219,7 @@ async function uploadPDF(card, idx, file) {
     area.querySelector('.pdf-pages-text').textContent = `(${data.pages} sayfa)`;
 
     // Enable makale slotlarını (unvan JCR'a ait, ayrı yönetiliyor)
-    ['baslik', 'atif_sayfasi', 'kaynakca'].forEach(s => {
+    ['baslik', 'baslik2', 'atif_sayfasi', 'kaynakca'].forEach(s => {
       card.querySelector(`.slot[data-slot="${s}"] .slot-pick-btn`).disabled = false;
     });
 
@@ -314,6 +314,7 @@ function openModal(fileId, totalPages, slotKey, onSelect) {
   const labels = {
     unvan:         'Yayının Ünvan Sayfası',
     baslik:        'Eserin Başlık Sayfası',
+    baslik2:       'Eserin Başlık Sayfası 2',
     atif_sayfasi:  'İlk Atıf Yapılan Sayfa',
     kaynakca:      'Kaynakça Sayfası',
   };

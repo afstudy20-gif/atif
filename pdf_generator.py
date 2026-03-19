@@ -196,6 +196,7 @@ def generate_citation_pdf(data: dict, output_path: str, upload_folder: str):
         slot_labels = [
             ('unvan',         f'A{i}. Yayının Ünvan Sayfası (kitap, dergi, vb.)'),
             ('baslik',        f'A{i}. Eserin Başlık Sayfası'),
+            ('baslik2',       f'A{i}. Eserin Başlık Sayfası 2'),
             ('atif_sayfasi',  f'A{i}. Eserde ilk atıf yapılan sayfa'),
             ('kaynakca',      f'A{i}. Kaynakça Sayfası'),
         ]
