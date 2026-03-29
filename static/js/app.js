@@ -106,7 +106,7 @@ function addAtif() {
     btn.addEventListener('click', () => {
       const pos = cardPos(card);
       if (pos === -1) return;
-      const isJcr = slotKey === 'unvan';
+      const isJcr = slotKey === 'unvan' || slotKey === 'unvan2';
       const fid   = isJcr ? atiflar[pos].jcrFileId  : atiflar[pos].fileId;
       const pages = isJcr ? atiflar[pos].jcrTotalPages : atiflar[pos].totalPages;
       if (!fid) { showToast(isJcr ? 'Önce JCR PDF yükleyin' : 'Önce makale PDF yükleyin', 'error'); return; }
@@ -184,6 +184,7 @@ async function uploadJCR(card, idx, file) {
 
     // Enable unvan slot pick + auto-select page 0
     card.querySelector('.slot[data-slot="unvan"] .slot-pick-btn').disabled = false;
+    card.querySelector('.slot[data-slot="unvan2"] .slot-pick-btn').disabled = false;
     selectPage(card, idx, 'unvan', 0);
 
     showToast(`JCR PDF yüklendi — ünvan sayfası otomatik seçildi`, 'success');
@@ -284,7 +285,7 @@ async function extractAndFetchDOI(card, idx, fileId) {
 function selectPage(card, idx, slotKey, page) {
   const pos = cardPos(card);
   if (pos === -1) return;
-  const isJcr = slotKey === 'unvan';
+  const isJcr = slotKey === 'unvan' || slotKey === 'unvan2';
   const fileId = isJcr ? atiflar[pos].jcrFileId : atiflar[pos].fileId;
   if (!fileId) return;
 
@@ -313,6 +314,7 @@ const modalTitle    = document.getElementById('modal-title');
 function openModal(fileId, totalPages, slotKey, onSelect) {
   const labels = {
     unvan:         'Yayının Ünvan Sayfası',
+    unvan2:        'Yayının Ünvan Sayfası 2',
     baslik:        'Eserin Başlık Sayfası',
     baslik2:       'Eserin Başlık Sayfası 2',
     atif_sayfasi:  'İlk Atıf Yapılan Sayfa',
