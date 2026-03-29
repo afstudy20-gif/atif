@@ -193,17 +193,21 @@ def generate_citation_pdf(data: dict, output_path: str, upload_folder: str):
 
         pages_cfg = atif.get('pages', {})
 
+        # optional=True → seçilmemişse atla (placeholder gösterme)
         slot_labels = [
-            ('unvan',         f'A{i}. Yayının Ünvan Sayfası (kitap, dergi, vb.)'),
-            ('baslik',        f'A{i}. Eserin Başlık Sayfası'),
-            ('baslik2',       f'A{i}. Eserin Başlık Sayfası 2'),
-            ('atif_sayfasi',  f'A{i}. Eserde ilk atıf yapılan sayfa'),
-            ('kaynakca',      f'A{i}. Kaynakça Sayfası'),
+            ('unvan',         f'A{i}. Yayının Ünvan Sayfası (kitap, dergi, vb.)', False),
+            ('unvan2',        f'A{i}. Yayının Ünvan Sayfası (kitap, dergi, vb.)', True),
+            ('baslik',        f'A{i}. Eserin Başlık Sayfası',                     False),
+            ('baslik2',       f'A{i}. Eserin Başlık Sayfası 2',                   True),
+            ('atif_sayfasi',  f'A{i}. Eserde ilk atıf yapılan sayfa',             False),
+            ('kaynakca',      f'A{i}. Kaynakça Sayfası',                          False),
         ]
 
-        for slot_key, label in slot_labels:
+        for slot_key, label, optional in slot_labels:
             slot = pages_cfg.get(slot_key)
             if not slot:
+                if optional:
+                    continue
                 # Placeholder
                 _draw_placeholder(pdf, label)
                 continue
