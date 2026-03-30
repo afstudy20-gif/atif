@@ -41,6 +41,9 @@ let modal = {
   currentPage: 0,
   onSelect: null,    // callback(page)
   title: '',
+  searchable: false,
+  searchResults: [],
+  searchIdx: 0,
 };
 
 // ── Atıf count badge ─────────────────────────────
@@ -311,6 +314,8 @@ const modalImg      = document.getElementById('modal-preview-img');
 const modalPageInfo = document.getElementById('modal-page-info');
 const modalTitle    = document.getElementById('modal-title');
 
+const SEARCHABLE_SLOTS = new Set(['atif_sayfasi', 'kaynakca']);
+
 function openModal(fileId, totalPages, slotKey, onSelect) {
   const labels = {
     unvan:         'Yayının Ünvan Sayfası',
@@ -320,12 +325,28 @@ function openModal(fileId, totalPages, slotKey, onSelect) {
     atif_sayfasi:  'İlk Atıf Yapılan Sayfa',
     kaynakca:      'Kaynakça Sayfası',
   };
-  modal.fileId     = fileId;
-  modal.totalPages = totalPages;
-  modal.currentPage = 0;
-  modal.onSelect   = onSelect;
-  modal.title      = labels[slotKey] || slotKey;
+  modal.fileId        = fileId;
+  modal.totalPages    = totalPages;
+  modal.currentPage   = 0;
+  modal.onSelect      = onSelect;
+  modal.title         = labels[slotKey] || slotKey;
+  modal.searchable    = SEARCHABLE_SLOTS.has(slotKey);
+  modal.searchResults = [];
+  modal.searchIdx     = 0;
+
   modalTitle.textContent = modal.title;
+
+  const searchBar = document.getElementById('modal-search-bar');
+  if (modal.searchable) {
+    searchBar.classList.remove('hidden');
+    document.getElementById('modal-search-input').value = '';
+    document.getElementById('modal-search-info').textContent = '';
+    document.getElementById('modal-search-prev').disabled = true;
+    document.getElementById('modal-search-next').disabled = true;
+  } else {
+    searchBar.classList.add('hidden');
+  }
+
   modalEl.classList.remove('hidden');
   loadModalPage(0);
 }
@@ -340,6 +361,55 @@ function closeModal() { modalEl.classList.add('hidden'); }
 
 document.getElementById('modal-prev').addEventListener('click', () => loadModalPage(modal.currentPage - 1));
 document.getElementById('modal-next').addEventListener('click', () => loadModalPage(modal.currentPage + 1));
+
+async function runModalSearch() {
+  const q = document.getElementById('modal-search-input').value.trim();
+  if (!q) return;
+  const info = document.getElementById('modal-search-info');
+  info.textContent = 'Aranıyor...';
+  try {
+    const resp = await fetch(`/api/pdf/search/${modal.fileId}?q=${encodeURIComponent(q)}`);
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error);
+    modal.searchResults = data.pages;
+    modal.searchIdx = 0;
+    if (data.pages.length === 0) {
+      info.textContent = 'Bulunamadı';
+      document.getElementById('modal-search-prev').disabled = true;
+      document.getElementById('modal-search-next').disabled = true;
+    } else {
+      document.getElementById('modal-search-prev').disabled = false;
+      document.getElementById('modal-search-next').disabled = false;
+      updateSearchInfo();
+      loadModalPage(modal.searchResults[0]);
+    }
+  } catch (e) {
+    info.textContent = 'Hata: ' + e.message;
+  }
+}
+
+function updateSearchInfo() {
+  const total = modal.searchResults.length;
+  const cur = modal.searchIdx + 1;
+  document.getElementById('modal-search-info').textContent = `${cur} / ${total} eşleşme`;
+}
+
+document.getElementById('modal-search-btn').addEventListener('click', runModalSearch);
+document.getElementById('modal-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runModalSearch();
+});
+document.getElementById('modal-search-prev').addEventListener('click', () => {
+  if (!modal.searchResults.length) return;
+  modal.searchIdx = (modal.searchIdx - 1 + modal.searchResults.length) % modal.searchResults.length;
+  updateSearchInfo();
+  loadModalPage(modal.searchResults[modal.searchIdx]);
+});
+document.getElementById('modal-search-next').addEventListener('click', () => {
+  if (!modal.searchResults.length) return;
+  modal.searchIdx = (modal.searchIdx + 1) % modal.searchResults.length;
+  updateSearchInfo();
+  loadModalPage(modal.searchResults[modal.searchIdx]);
+});
 document.getElementById('modal-select').addEventListener('click', () => {
   if (modal.onSelect) modal.onSelect(modal.currentPage);
   closeModal();
@@ -404,9 +474,11 @@ const fallbackName = (fallbackTitle + (fallbackIndeks ? '_' + fallbackIndeks : '
 
 const finalName = data.download_name || fallbackName;
 
-link.href = `/api/download/${data.file_id}?name=${encodeURIComponent(finalName)}`;
+const pdfUrl = `/api/download/${data.file_id}?name=${encodeURIComponent(finalName)}`;
+link.href = pdfUrl;
 link.download = finalName;
 dl.classList.remove('hidden');
+    window.open(pdfUrl, '_blank');
     document.getElementById('generate-info').textContent = 'PDF hazır!';
     showToast('PDF oluşturuldu', 'success');
   } catch (e) {

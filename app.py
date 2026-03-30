@@ -180,6 +180,30 @@ def extract_doi(file_id):
         return jsonify({'doi': None})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+@app.route('/api/pdf/search/<file_id>')
+def pdf_search(file_id):
+    """Search text in PDF and return matching page numbers."""
+    if not all(c in '0123456789abcdef-' for c in file_id):
+        return jsonify({'error': 'Geçersiz'}), 400
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify({'error': 'Arama terimi gerekli'}), 400
+    path = os.path.join(UPLOAD_FOLDER, f'{file_id}.pdf')
+    if not os.path.exists(path):
+        return jsonify({'error': 'Dosya yok'}), 404
+    try:
+        doc = fitz.open(path)
+        pages = []
+        for i in range(doc.page_count):
+            hits = doc.load_page(i).search_for(query, flags=fitz.TEXT_DEHYPHENATE)
+            if hits:
+                pages.append(i)
+        doc.close()
+        return jsonify({'pages': pages, 'total': len(pages)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 def build_download_name(data):
     eser_adi = (data.get('eser_adi') or '').strip()
     atiflar = data.get('atiflar') or []

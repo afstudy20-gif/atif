@@ -227,6 +227,16 @@ textarea { resize: vertical; min-height: 52px; }
   padding: 14px 18px; border-bottom: 1px solid #e8eef7;
   font-weight: 700; font-size: 14px; color: #2E5395;
 }
+.modal-search-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-bottom: 1px solid #f0f4f9;
+  background: #f7f9fd;
+}
+.modal-search-bar input {
+  flex: 1; padding: 5px 10px; border: 1px solid #c8d8f0;
+  border-radius: 6px; font-size: 13px;
+}
+#modal-search-info { font-size: 12px; color: #555; white-space: nowrap; min-width: 80px; text-align: center; }
 .modal-nav {
   display: flex; align-items: center; justify-content: center;
   gap: 16px; padding: 10px 18px; border-bottom: 1px solid #f0f4f9;
