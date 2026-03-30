@@ -348,6 +348,7 @@ function openModal(fileId, totalPages, slotKey, onSelect) {
   }
 
   modalEl.classList.remove('hidden');
+  applyZoom(1.0);
   loadModalPage(0);
 }
 
@@ -357,7 +358,31 @@ function loadModalPage(page) {
   modalImg.src = `/api/pdf/preview/${modal.fileId}/${modal.currentPage}`;
 }
 
-function closeModal() { modalEl.classList.add('hidden'); }
+// ── Zoom ──────────────────────────────────────────
+let zoomLevel = 1.0;
+const ZOOM_STEP = 0.25;
+const ZOOM_MIN  = 0.5;
+const ZOOM_MAX  = 3.0;
+
+function applyZoom(z) {
+  zoomLevel = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+  modalImg.style.transform = `scale(${zoomLevel})`;
+  modalImg.style.width = zoomLevel <= 1 ? '100%' : 'auto';
+  document.getElementById('zoom-level').textContent = Math.round(zoomLevel * 100) + '%';
+}
+
+document.getElementById('zoom-in').addEventListener('click',  () => applyZoom(zoomLevel + ZOOM_STEP));
+document.getElementById('zoom-out').addEventListener('click', () => applyZoom(zoomLevel - ZOOM_STEP));
+document.getElementById('zoom-fit').addEventListener('click', () => applyZoom(1.0));
+
+// Ctrl+scroll ile zoom
+document.getElementById('page-modal').addEventListener('wheel', e => {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
+  applyZoom(zoomLevel + (e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP));
+}, { passive: false });
+
+function closeModal() { modalEl.classList.add('hidden'); applyZoom(1.0); }
 
 document.getElementById('modal-prev').addEventListener('click', () => loadModalPage(modal.currentPage - 1));
 document.getElementById('modal-next').addEventListener('click', () => loadModalPage(modal.currentPage + 1));
