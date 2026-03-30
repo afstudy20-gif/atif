@@ -204,20 +204,29 @@ def pdf_search(file_id):
         return jsonify({'error': str(e)}), 500
 
 
+INDEKS_KISALTMA = {
+    'a)': 'SCI',
+    'b)': 'BKCI',
+    'c)': 'TRDizin',
+    'd)': 'Diger',
+}
+
 def build_download_name(data):
     eser_adi = (data.get('eser_adi') or '').strip()
     atiflar = data.get('atiflar') or []
 
+    atif_count = len(atiflar)
     title_words = eser_adi.split()[:5]
     title_part = '_'.join(title_words)
 
-    indeks_first = ''
+    indeks_kisaltma = ''
     if atiflar and isinstance(atiflar, list):
         ilk_indeks = (atiflar[0].get('indeks') or '').strip()
-        if ilk_indeks:
-            indeks_first = ilk_indeks.split()[0]
+        prefix = ilk_indeks.split()[0].lower() if ilk_indeks else ''
+        indeks_kisaltma = INDEKS_KISALTMA.get(prefix, ilk_indeks.split()[0] if ilk_indeks else '')
 
-    raw_name = f"{title_part}_{indeks_first}" if indeks_first else title_part
+    parts = [str(atif_count), indeks_kisaltma, title_part]
+    raw_name = '-'.join(p for p in parts if p)
     raw_name = re.sub(r'[\\/:*?"<>|;,()]+', '', raw_name)
     raw_name = re.sub(r'\s+', '_', raw_name).strip('_')
     safe_name = secure_filename(raw_name)
